@@ -92,7 +92,7 @@ const SmartfloUserMapping = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        `${process.env.REACT_APP_API_URL || "http://localhost:4000"}/api/smartflo/users/${editDialog.user._id}/map`,
+        `${process.env.REACT_APP_URL}/api/smartflo/users/${editDialog.user._id}/map`,
         formData,
         {
           headers: {
