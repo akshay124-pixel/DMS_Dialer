@@ -59,7 +59,7 @@ const CallAnalyticsDashboard = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const baseURL = process.env.REACT_APP_URL || "http://localhost:4000";
+      const baseURL = process.env.REACT_APP_URL;
 
       // Fetch all analytics data
       const [summaryRes, agentRes, trendsRes] = await Promise.all([
