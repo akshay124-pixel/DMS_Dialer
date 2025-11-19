@@ -33,9 +33,7 @@ const SmartfloUserMapping = () => {
   const [loading, setLoading] = useState(false);
   const [editDialog, setEditDialog] = useState({ open: false, user: null });
   const [formData, setFormData] = useState({
-    smartfloUserId: "",
     smartfloAgentNumber: "",
-    smartfloExtension: "",
     smartfloEnabled: false,
   });
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "info" });
@@ -70,9 +68,7 @@ const SmartfloUserMapping = () => {
 
   const handleEditClick = (user) => {
     setFormData({
-      smartfloUserId: user.smartfloUserId || "",
       smartfloAgentNumber: user.smartfloAgentNumber || "",
-      smartfloExtension: user.smartfloExtension || "",
       smartfloEnabled: user.smartfloEnabled || false,
     });
     setEditDialog({ open: true, user });
@@ -81,9 +77,7 @@ const SmartfloUserMapping = () => {
   const handleCloseDialog = () => {
     setEditDialog({ open: false, user: null });
     setFormData({
-      smartfloUserId: "",
       smartfloAgentNumber: "",
-      smartfloExtension: "",
       smartfloEnabled: false,
     });
   };
@@ -91,9 +85,15 @@ const SmartfloUserMapping = () => {
   const handleSave = async () => {
     try {
       const token = localStorage.getItem("token");
+
+      const payload = {
+        smartfloAgentNumber: formData.smartfloAgentNumber.trim(),
+        smartfloEnabled: formData.smartfloEnabled,
+      };
+
       const response = await axios.put(
         `${process.env.REACT_APP_URL}/api/smartflo/users/${editDialog.user._id}/map`,
-        formData,
+        payload,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -111,7 +111,6 @@ const SmartfloUserMapping = () => {
       showSnackbar(error.response?.data?.message || "Failed to update mapping", "error");
     }
   };
-
   const showSnackbar = (message, severity) => {
     setSnackbar({ open: true, message, severity });
   };
@@ -282,30 +281,31 @@ const SmartfloUserMapping = () => {
       </Paper>
 
       {/* Edit Dialog */}
-      <Dialog 
-        open={editDialog.open} 
-        onClose={handleCloseDialog} 
-        maxWidth="sm" 
+     
+      <Dialog
+        open={editDialog.open}
+        onClose={handleCloseDialog}
+        maxWidth="sm"
         fullWidth
         PaperProps={{ sx: { borderRadius: "12px" } }}
       >
-        <DialogTitle 
-          sx={{ 
+        <DialogTitle
+          sx={{
             fontWeight: 600,
             background: "linear-gradient(135deg, #2575fc, #6a11cb)",
-            color: "white"
+            color: "white",
           }}
         >
           🔗 Map User to Smartflo Agent
         </DialogTitle>
         <DialogContent dividers>
           <Box display="flex" flexDirection="column" gap={2} mt={1}>
-            <Box 
-              sx={{ 
-                p: 2, 
-                background: "#e3f2fd", 
+            <Box
+              sx={{
+                p: 2,
+                background: "#e3f2fd",
                 borderRadius: "8px",
-                borderLeft: "4px solid #2575fc"
+                borderLeft: "4px solid #2575fc",
               }}
             >
               <Typography variant="body2" color="textSecondary">
@@ -317,36 +317,24 @@ const SmartfloUserMapping = () => {
             </Box>
 
             <TextField
-              label="Smartflo User ID"
-              value={formData.smartfloUserId}
-              onChange={(e) => setFormData({ ...formData, smartfloUserId: e.target.value })}
-              fullWidth
-              helperText="Optional: Smartflo user identifier"
-            />
-
-            <TextField
-              label="Agent Phone Number"
+              label="Agent Phone Number (Smartflo)"
               value={formData.smartfloAgentNumber}
-              onChange={(e) => setFormData({ ...formData, smartfloAgentNumber: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, smartfloAgentNumber: e.target.value })
+              }
               fullWidth
               required
               placeholder="+919876543210"
-              helperText="Agent's phone number in Smartflo"
-            />
-
-            <TextField
-              label="Extension"
-              value={formData.smartfloExtension}
-              onChange={(e) => setFormData({ ...formData, smartfloExtension: e.target.value })}
-              fullWidth
-              helperText="Optional: Extension number"
+              helperText="This must be a valid Smartflo agent number / phone"
             />
 
             <FormControlLabel
               control={
                 <Switch
                   checked={formData.smartfloEnabled}
-                  onChange={(e) => setFormData({ ...formData, smartfloEnabled: e.target.checked })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, smartfloEnabled: e.target.checked })
+                  }
                 />
               }
               label="Enable Smartflo for this user"
@@ -354,12 +342,12 @@ const SmartfloUserMapping = () => {
           </Box>
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
-          <Button 
+          <Button
             onClick={handleCloseDialog}
             sx={{
               textTransform: "none",
               fontWeight: 600,
-              borderRadius: "8px"
+              borderRadius: "8px",
             }}
           >
             Cancel
@@ -372,11 +360,10 @@ const SmartfloUserMapping = () => {
               textTransform: "none",
               fontWeight: 600,
               borderRadius: "8px",
-             
               background: "linear-gradient(135deg, #2575fc, #6a11cb)",
               "&:hover": {
                 background: "linear-gradient(135deg, #1a5fd9, #5a0fb0)",
-              }
+              },
             }}
           >
             Save Mapping
