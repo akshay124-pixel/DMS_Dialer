@@ -518,7 +518,6 @@ function ViewEntry({ isOpen, onClose, entry, isAdmin, onEntryUpdated }) {
               />
             )}
             <DataItem label="Remarks" value={entry.remarks} />
-            
             <DataItem
               label="Created"
               value={
