@@ -14,6 +14,7 @@ import SignUp from "./Auth/SignUp";
 import Navbar from "./components/Navbar";
 import CallAnalyticsDashboard from "./components/Analytics/CallAnalyticsDashboard";
 import SmartfloUserMapping from "./components/Smartflo/SmartfloUserMapping";
+import ScheduledCallsManager from "./components/Dialer/ScheduledCallsManager";
 
 const PrivateRoute = ({ element, isAuthenticated }) => {
   return isAuthenticated ? element : <Navigate to="/login" />;
@@ -86,6 +87,15 @@ function App() {
           element={
             <PrivateRoute
               element={<SmartfloUserMapping />}
+              isAuthenticated={isAuthenticated}
+            />
+          }
+        />
+        <Route
+          path="/scheduled-calls"
+          element={
+            <PrivateRoute
+              element={<ScheduledCallsManager />}
               isAuthenticated={isAuthenticated}
             />
           }

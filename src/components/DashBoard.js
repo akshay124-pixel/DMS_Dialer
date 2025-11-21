@@ -15,7 +15,7 @@ import {
   FaPlus,
   FaFileExport,
   FaChartBar,
-  FaPhoneAlt, FaProjectDiagram
+  FaPhoneAlt, FaProjectDiagram,FaCalendarAlt 
 } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import { DateRangePicker } from "react-date-range";
@@ -1119,13 +1119,61 @@ function DashBoard() {
       document.body.style.overflow = "auto";
     };
   }, [isAnalyticsOpen, isValueAnalyticsOpen]);
+// Helper function to get row background color based on lead status
+const getRowBackgroundColor = (status) => {
+  switch (status) {
+    case "Interested":
+      return "#d9f4e5"; 
+    case "Maybe":
+      return "#fff8e1"; 
+    case "Not Interested":
+      return "#e0f7fa"; 
+    case "Not": // Not Connected
+      return "#f2f3f5"; // updated greyish tone
+    case "Service":
+      return "#e3f2fd"; 
+    case "Closed Won":
+      return "#e8f5e9";
+    case "Closed Lost":
+      return "#f3e5f5";
+    case "Not Found":
+      return "transparent";
+    default:
+      return "transparent";
+  }
+};
+
+
+const getRowBackgroundColorcalltype = (closetype) => {
+  switch (closetype) {
+    case "Closed Won":
+      return "#e8f5e9";
+    case "Closed Lost":
+      return "#f3e5f5";
+    default:
+      return "transparent";
+  }
+};
+
+
 const rowRenderer = ({ index, key, style }) => {
-  const row = filteredData[index];
+   const row = filteredData[index];
   const isSelected = selectedEntries.includes(row._id);
+
+  const rowBgColor = getRowBackgroundColor(row.status);
+  const rowBgColor1 = getRowBackgroundColorcalltype(row.closetype);
+
   return (
     <div
       key={key}
-      style={{ ...style, cursor: "pointer" }}
+      style={{
+        ...style,
+        cursor: "pointer",
+        backgroundColor: isSelected
+          ? "rgba(37, 117, 252, 0.15)"
+          : (rowBgColor !== "transparent" ? rowBgColor : rowBgColor1),
+        transition: "background-color 0.2s ease",
+      }}
       className={`virtual-row ${isSelected ? "selected" : ""}`}
       onDoubleClick={() => handleDoubleClick(row._id)}
       onClick={() => handleSingleClick(row._id)}
@@ -1679,6 +1727,37 @@ const rowRenderer = ({ index, key, style }) => {
              <FaPhoneAlt size={18} color="white" />   {role === "Others" ? "My Calls" : "Call Analytics"}
           </button>
 
+          <button
+            className="button"
+            onClick={() => navigate("/scheduled-calls")}
+            style={{
+              padding: "12px 20px",
+              background: "linear-gradient(90deg, #2575fc, #6a11cb)",
+              color: "white",
+              borderRadius: "12px",
+              cursor: "pointer",
+              fontWeight: "bold",
+              border: "none",
+              fontSize: "1rem",
+              boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+              transition: "transform 0.2s ease, box-shadow 0.2s ease",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = "translateY(-2px)";
+              e.target.style.boxShadow = "0px 6px 12px rgba(0, 0, 0, 0.2)";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = "translateY(0)";
+              e.target.style.boxShadow = "0px 4px 6px rgba(0, 0, 0, 0.1)";
+            }}
+          >
+            <FaCalendarAlt size={18} color="white" />
+  Scheduled Calls
+          </button>
+
           {(isAdmin || isSuperadmin) && (
             <button
               className="button"
@@ -1922,7 +2001,7 @@ const rowRenderer = ({ index, key, style }) => {
 <div
   className="table-container"
   style={{
-    width: "100%",
+   width: "100%",
     maxWidth: "100%", // Fit screen width
     height: "75vh",
     margin: "0 auto",
@@ -1936,7 +2015,7 @@ const rowRenderer = ({ index, key, style }) => {
   }}
 >
   <div
-    className="table-header"
+     className="table-header"
     style={{
       background: "linear-gradient(135deg, #2575fc, #6a11cb)",
       color: "white",
@@ -1971,18 +2050,18 @@ const rowRenderer = ({ index, key, style }) => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        fontSize: { xs: "1.2rem", sm: "1.5rem" },
+        fontSize: "1.5rem",
         color: "#666",
         fontWeight: "bold",
         textAlign: "center",
         padding: "20px",
-        minWidth: "1000px", // Match header minWidth
+        minWidth: "1190px",
       }}
     >
       No Entries Available
     </div>
   ) : (
-    <AutoSizer>
+     <AutoSizer>
       {({ height, width }) => (
         <List
           ref={listRef}
@@ -2028,6 +2107,7 @@ const rowRenderer = ({ index, key, style }) => {
           onClose={handleClosed}
           entry={selectedEntry}
           isAdmin={isAdmin}
+          onEntryUpdated={handleEntryUpdated}
         />
         <AdminDrawer
           entries={entries}
@@ -2101,40 +2181,36 @@ const rowRenderer = ({ index, key, style }) => {
        <style>
         {`
           
-  @media (max-width: 768px) {
-
  
-   
-   .button {
-    margin-top:5px;
-    margin-bottom: 8px;
-    width:250px
-  }
-   .copy { 
-    margin-bottom: 8px;
-  
-   width:250px
-  }
-   .select { 
-    margin-bottom: 8px;
+  /* Mobile Responsive Styles */
+  @media (max-width: 768px) {
+    .button {
+      margin-top: 5px;
+      margin-bottom: 8px;
+      width: 250px;
+    }
     
-   width:250px
-  }
-  .table-container {
-    width: 100%;
-    max-width: 100%; /* Fit screen width */
-    height: 75vh;
-    margin: 0 auto;
-    overflow-x: auto; /* Horizontal scrolling */
-    overflow-y: auto; /* Vertical scrolling */
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-    border-radius: 15px;
-    margin-top: 20px;
-    background-color: #fff;
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile */
-  }
+    .copy { 
+      margin-bottom: 8px;
+      width: 250px;
+    }
+    
+    .select { 
+      margin-bottom: 8px;
+      width: 250px;
+    }
 
-  .table-header {
+    .cursor-pointer {
+      width: 296px !important;
+    }
+
+    .table-container {
+      max-width: 100%;
+      overflow-x: auto;
+      border-radius: 10px;
+    }
+
+    .table-header {
     background: linear-gradient(135deg, #2575fc, #6a11cb);
     color: white;
     padding: 15px 20px;
@@ -2151,66 +2227,35 @@ const rowRenderer = ({ index, key, style }) => {
     min-width: 1000px; /* Wide enough for scrolling */
   }
 
-  .virtual-row {
-    display: grid;
-    grid-template-columns: 80px 120px 150px 120px 120px 150px 100px 100px 100px 200px; /* Match header exactly */
-    align-items: center;
-    padding: 10px 20px;
-    border-bottom: 1px solid #eee;
-    min-width: 1000px; /* Match header minWidth */
-  }
-
-  .virtual-cell {
-    padding: 10px;
-    font-size: 1rem;
-    text-align: center;
-    white-space: nowrap; /* Prevent text wrapping */
-  }
-
-  .actions-cell {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 200px;
-    padding: 0 5px;
-  }
-
-  @media (max-width: 768px) {
-
-   .cursor-pointer{
-    width: 296px !important;
-    }
-
-    .table-container {
-      max-width: 100%; /* Fit screen width */
-      overflow-x: auto; /* Ensure horizontal scrolling */
-    }
-
-    .table-header {
-      grid-template-columns: 60px 100px 120px 100px 100px 120px 80px 80px 80px 150px !important; /* Smaller columns for mobile */
-      font-size: 0.9rem !important;
-      min-width: 1000px; /* Wide enough for scrolling */
-    }
-
     .virtual-row {
-      grid-template-columns: 60px 100px 120px 100px 100px 120px 80px 80px 80px 150px !important; /* Match header exactly */
-      min-width: 1000px; /* Wide enough for scrolling */
+      grid-template-columns: 50px 90px 110px 90px 100px 120px 80px 80px 80px 200px !important;
+      padding: 8px 15px !important;
+      min-width: 1020px;
     }
 
     .virtual-cell {
       font-size: 0.75rem !important;
-      padding: 6px !important;
-      margin-left: -34px;
+      padding: 5px !important;
+      margin-left: -30px;
     }
 
     .actions-cell {
-      width: 186px !important;
-      gap: 0px !important;
-      margin-left: -40px !important;
+      width: 200px !important;
+      gap: 3px !important;
+      margin-left: -35px !important;
+    }
+
+    .actions-cell button,
+    .actions-cell .bin-button,
+    .actions-cell .editBtn {
+      width: 32px !important;
+      height: 32px !important;
+      min-width: 32px !important;
+      padding: 0 !important;
     }
 
     .table-container::-webkit-scrollbar {
-      height: 8px; /* Horizontal scrollbar height */
+      height: 6px;
     }
 
     .table-container::-webkit-scrollbar-thumb {
@@ -2221,9 +2266,19 @@ const rowRenderer = ({ index, key, style }) => {
     .table-container::-webkit-scrollbar-track {
       background-color: #f1f1f1;
     }
-  }
-    .enhanced-search-bar-container { flex-direction: column; align-items: center; }
-    .enhanced-search-bar, .enhanced-filter-dropdown, .reset-button { width: 100% !important; max-width: 300px !important; margin-bottom: 10px; }
+
+    .enhanced-search-bar-container { 
+      flex-direction: column; 
+      align-items: center; 
+    }
+    
+    .enhanced-search-bar, 
+    .enhanced-filter-dropdown, 
+    .reset-button { 
+      width: 100% !important; 
+      max-width: 300px !important; 
+      margin-bottom: 10px; 
+    }
   }
 
   .footer-container {
