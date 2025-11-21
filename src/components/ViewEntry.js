@@ -382,6 +382,59 @@ function ViewEntry({ isOpen, onClose, entry, isAdmin }) {
               />
             )}
             <DataItem label="Remarks" value={entry.remarks} />
+              <DataItem
+  label="Call Status"
+  value={
+    <Badge
+      style={{
+        background:
+          entry.callStatus === "initiated"
+            ? "linear-gradient(135deg, #2563eb, #1d4ed8)" // Initiated - Blue
+            : entry.callStatus === "ringing"
+            ? "linear-gradient(135deg, #f59e0b, #d97706)" // Ringing - Amber
+            : entry.callStatus === "answered"
+            ? "linear-gradient(135deg, #10b981, #059669)" // Answered - Green
+            : entry.callStatus === "completed"
+            ? "linear-gradient(135deg, #16a34a, #15803d)" // Completed - Dark Green
+            : entry.callStatus === "failed"
+            ? "linear-gradient(135deg, #ef4444, #b91c1c)" // Failed - Red
+            : entry.callStatus === "no_answer"
+            ? "linear-gradient(135deg, #f97316, #ea580c)" // No Answer - Orange
+            : entry.callStatus === "busy"
+            ? "linear-gradient(135deg, #7c3aed, #5b21b6)" // Busy - Purple
+            : entry.callStatus === "cancelled"
+            ? "linear-gradient(135deg, #6b7280, #4b5563)" // Cancelled - Grey
+            : entry.callStatus === "callback_scheduled"
+            ? "linear-gradient(135deg, #0ea5e9, #0369a1)" // Callback Scheduled - Blue
+            : "linear-gradient(135deg, #9ca3af, #6b7280)", // Not Called / default
+        color: "#fff",
+        padding: "0.35rem 0.8rem",
+        borderRadius: "999px",
+        fontWeight: 500,
+        textTransform: "capitalize",
+        fontSize: "0.85rem",
+      }}
+    >
+      {(() => {
+        const status = entry.callStatus || "not_called";
+        const map = {
+          not_called: "Not Called",
+          initiated: "Initiated",
+          ringing: "Ringing",
+          answered: "Answered",
+          completed: "Completed",
+          failed: "Failed",
+          no_answer: "No Answer",
+          busy: "Busy",
+          cancelled: "Cancelled",
+          callback_scheduled: "Callback Scheduled",
+        };
+        return map[status] || "Not Called";
+      })()}
+    </Badge>
+  }
+/>
+
             <DataItem
               label="Created"
               value={
