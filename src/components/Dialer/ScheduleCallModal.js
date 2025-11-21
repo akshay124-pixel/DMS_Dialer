@@ -84,7 +84,7 @@ const ScheduleCallModal = ({
       );
 
       if (response.data.success) {
-        toast.success("✅ Call scheduled successfully!");
+        toast.success("Call scheduled successfully!");
 
         if (onCallScheduled) {
           onCallScheduled({
