@@ -258,14 +258,31 @@ const CallAnalyticsDashboard = () => {
   return (
     <Box p={3} sx={{ background: "#f5f7fa", minHeight: "100vh" }}>
       {/* Header */}
-      <Box 
-        display="flex" 
-        alignItems="center" 
-        gap={2} 
-        mb={3}
-        flexWrap="wrap"
-      >
-        <Button
+     
+
+      {/* Date Range Filter Section */}
+      <Paper 
+        elevation={0} 
+        sx={{ 
+          p: { xs: 2, sm: 3 }, 
+          mb: 3, 
+          borderRadius: "15px",
+          boxShadow: "0 6px 18px rgba(0, 0, 0, 0.1)",
+          border: "none",
+          background: "white"
+        }}
+      > 
+        
+        <Box 
+          display="flex" 
+          alignItems="center" 
+          gap={2} 
+          flexWrap="wrap"
+          sx={{
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: { xs: "stretch", sm: "center" }
+          }}
+        ><Button
           startIcon={<ArrowBack />}
           onClick={() => navigate("/dashboard")}
           sx={{
@@ -282,45 +299,31 @@ const CallAnalyticsDashboard = () => {
         >
           Back to Dashboard
         </Button>
-      </Box>
-
-      {/* Date Range Filter Section */}
-      <Paper 
-        elevation={0} 
-        sx={{ 
-          p: { xs: 2, sm: 3 }, 
-          mb: 3, 
-          borderRadius: "15px",
-          boxShadow: "0 6px 18px rgba(0, 0, 0, 0.1)",
-          border: "none",
-          background: "white"
-        }}
-      >
-        <Box 
-          display="flex" 
-          alignItems="center" 
-          gap={2} 
-          flexWrap="wrap"
-          sx={{
-            flexDirection: { xs: "column", sm: "row" },
-            alignItems: { xs: "stretch", sm: "center" }
-          }}
-        >
-          <Typography 
-            variant="h6" 
-            fontWeight={700} 
-            sx={{ 
-              background: "linear-gradient(135deg, #2575fc, #6a11cb)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              mr: { xs: 0, sm: 2 },
-              mb: { xs: 1, sm: 0 },
-              fontSize: { xs: "1.1rem", sm: "1.25rem" }
+    
+          <Button
+            variant="contained"
+            startIcon={<FileDownload />}
+            onClick={handleExportCSV}
+            sx={{
+              background: "linear-gradient(90deg, #10b981, #059669)",
+              textTransform: "none",
+              fontWeight: 700,
+              px: 3,
+              py: 1,
+              borderRadius: "12px",
+              boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+              width: { xs: "100%", sm: "auto" },
+              ml: { xs: 0, sm: "auto" },
+              "&:hover": {
+                background: "linear-gradient(90deg, #059669, #047857)",
+                transform: "translateY(-2px)",
+                boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.2)",
+              },
+              transition: "all 0.2s ease"
             }}
           >
-            📅 Filter by Date Range
-          </Typography>
-          <TextField
+            Export CSV
+          </Button>  <TextField
             label="Start Date"
             type="date"
             value={startDate}
@@ -405,30 +408,6 @@ const CallAnalyticsDashboard = () => {
             }}
           >
             Reset
-          </Button>
-          <Button
-            variant="contained"
-            startIcon={<FileDownload />}
-            onClick={handleExportCSV}
-            sx={{
-              background: "linear-gradient(90deg, #10b981, #059669)",
-              textTransform: "none",
-              fontWeight: 700,
-              px: 3,
-              py: 1,
-              borderRadius: "12px",
-              boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-              width: { xs: "100%", sm: "auto" },
-              ml: { xs: 0, sm: "auto" },
-              "&:hover": {
-                background: "linear-gradient(90deg, #059669, #047857)",
-                transform: "translateY(-2px)",
-                boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.2)",
-              },
-              transition: "all 0.2s ease"
-            }}
-          >
-            Export CSV
           </Button>
         </Box>
       </Paper>
@@ -558,7 +537,7 @@ const CallAnalyticsDashboard = () => {
                   <Typography color="textSecondary" gutterBottom fontWeight={600} fontSize="0.9rem">
                     Total Duration
                   </Typography>
-                  <Typography variant="h5" fontWeight={700} color="#f59e0b">
+                  <Typography variant="h3" fontWeight={700} color="#f59e0b">
                     {summary?.totalDurationFormatted || "0:00:00"}
                   </Typography>
                 </Box>
